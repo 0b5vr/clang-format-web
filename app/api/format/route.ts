@@ -26,7 +26,10 @@ export async function POST(req: Request) {
 
         process.on('close', (code) => {
           if (code === 0) {
-            console.warn(stderr);
+            if (stderr !== '') {
+              console.warn(stderr);
+            }
+
             resolve(stdout);
           } else {
             reject(stderr);
