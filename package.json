@@ -11,6 +11,9 @@
   "engines": {
     "node": "16.x"
   },
+  "volta": {
+    "node": "16.20.1"
+  },
   "dependencies": {
     "@codemirror/lang-cpp": "^6.0.2",
     "@codemirror/legacy-modes": "^6.3.2",
