@@ -10,6 +10,8 @@ import { yaml } from '@codemirror/legacy-modes/mode/yaml';
 
 export default function Home() {
   const [code, setCode] = useState(defaultCode);
+  const [fetching, setFetching] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [formatFile, setFormatFile] = useState('BasedOnStyle: LLVM\n');
 
   const handleChangeCode = useCallback((value: string) => {
@@ -21,6 +23,8 @@ export default function Home() {
   }, []);
 
   const handleFormat = useCallback(async () => {
+    setFetching(true);
+
     const res = await fetch('/api/format', {
       method: 'POST',
       headers: {
@@ -36,11 +40,19 @@ export default function Home() {
     if (json.code) {
       setCode(json.code);
     }
+
+    if (json.error) {
+      setError(json.error);
+    } else {
+      setError(null);
+    }
+
+    setFetching(false);
   }, [code, formatFile]);
 
   return (
     <main className="flex min-h-screen flex-col items-center gap-4 p-12">
-      <div className="flex gap-4">
+      <div className="grid grid-cols-2 gap-4 w-full">
         <div className="flex flex-col">
           <div>Code</div>
           <CodeMirror
@@ -48,7 +60,7 @@ export default function Home() {
             extensions={[cpp()]}
             theme={oneDark}
             basicSetup={{}}
-            className="w-96 h-96"
+            className="w-full h-96"
             onChange={handleChangeCode}
           />
         </div>
@@ -59,14 +71,21 @@ export default function Home() {
             extensions={[StreamLanguage.define(yaml)]}
             theme={oneDark}
             basicSetup={{}}
-            className="w-96 h-96"
+            className="w-full h-96"
             onChange={handleChangeFormatFile}
           />
         </div>
       </div>
-      <button onClick={handleFormat}>
+      <button
+        className="bg-slate-300 dark:bg-slate-700 text-slate-900 dark:text-slate-50 disabled:opacity-25 active:brightness-75 px-2 rounded"
+        onClick={handleFormat}
+        disabled={fetching}
+      >
         Format
       </button>
+      {error && <div className="text-red-400">
+        {error}
+      </div>}
     </main>
   );
 }
