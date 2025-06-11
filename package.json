@@ -9,10 +9,10 @@
     "lint": "next lint"
   },
   "engines": {
-    "node": "16.x"
+    "node": "22.x"
   },
   "volta": {
-    "node": "16.20.1"
+    "node": "22.16.0"
   },
   "dependencies": {
     "@codemirror/lang-cpp": "^6.0.2",
